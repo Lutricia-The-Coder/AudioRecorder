@@ -20,6 +20,14 @@ It provides a simple way to capture thoughts, reminders and important moments th
 - **Local Storage:** Store recordings on the device.
 - **Offline Access:** Access saved recordings without an internet connection.
 
+
+## Application Screenshots
+
+![Home Screen](assets/landing.jpeg)
+![Records Screen](assets/voice.jpeg)
+![Menu Screen](assets/rename_delete.jpeg)
+![Search Screen](assets/search.jpeg)
+
 ## 3. Technologies Used
 
 | Technology | Purpose |
