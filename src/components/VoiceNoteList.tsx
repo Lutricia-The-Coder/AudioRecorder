@@ -14,6 +14,7 @@ import VoiceNoteItem from './VoiceNoteItem';
 
 type Props = {
   notes: VoiceNote[];
+  searchQuery: string;
   playingId: string | null;
   isPlaying: boolean;
   currentTime: number;
@@ -25,6 +26,7 @@ type Props = {
 
 const VoiceNoteList = ({
   notes,
+  searchQuery,
   playingId,
   isPlaying,
   currentTime,
@@ -33,12 +35,15 @@ const VoiceNoteList = ({
   onRename,
   onDelete,
 }: Props) => {
+  const isSearching = searchQuery.trim().length > 0;
+
   return (
     <View style={styles.container}>
       {/* Recordings heading */}
       <View style={styles.heading}>
         <View>
           <Text style={styles.title}>Your recordings</Text>
+
           <Text style={styles.count}>
             {notes.length} {notes.length === 1 ? 'moment' : 'moments'}
           </Text>
@@ -55,14 +60,29 @@ const VoiceNoteList = ({
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyTitle}>
-              No recordings yet
-            </Text>
+            {isSearching ? (
+              <>
+                <Text style={styles.emptyTitle}>
+                  No recordings found
+                </Text>
 
-            <Text style={styles.empty}>
-              Your voice notes will appear here.
-              Start recording to capture a moment.
-            </Text>
+                <Text style={styles.empty}>
+                  We couldn't find any recordings matching "{searchQuery.trim()}".
+                  Try searching with a different name.
+                </Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.emptyTitle}>
+                  No recordings yet
+                </Text>
+
+                <Text style={styles.empty}>
+                  Your voice notes will appear here.
+                  Start recording to capture a moment.
+                </Text>
+              </>
+            )}
           </View>
         }
         renderItem={({ item }) => {

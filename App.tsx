@@ -3,10 +3,15 @@ import React, { useState } from 'react';
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   Alert,
 } from 'react-native';
+
+import {
+  SafeAreaView,
+  SafeAreaProvider,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 
 import Header from './src/components/Header';
 import RecordButton from './src/components/RecordButton';
@@ -18,7 +23,9 @@ import { useVoiceNotes } from './src/hooks/useVoiceNotes';
 import { formatTime } from './src/utils/formatTime';
 import { VoiceNote } from './src/types/VoiceNote';
 
-export default function App() {
+function VoiceJournal() {
+  const insets = useSafeAreaInsets();
+
   const [search, setSearch] = useState('');
   const [selectedNote, setSelectedNote] = useState<VoiceNote | null>(null);
   const [newName, setNewName] = useState('');
@@ -38,13 +45,11 @@ export default function App() {
     searchNotes,
   } = useVoiceNotes();
 
-  // Open rename modal
   const openRename = (note: VoiceNote) => {
     setSelectedNote(note);
     setNewName(note.name);
   };
 
-  // Save renamed recording
   const saveRename = () => {
     if (!newName.trim()) {
       Alert.alert('Error', 'Please enter a name.');
@@ -58,10 +63,8 @@ export default function App() {
     }
   };
 
-  // Filter recordings
   const filteredNotes = searchNotes(search);
 
-  // Start or stop recording
   const handleRecording = () => {
     if (recorderState.isRecording) {
       stopRecording();
@@ -71,39 +74,44 @@ export default function App() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <StatusBar barStyle="dark-content" />
 
-      <View style={styles.headerContainer}>
-        <Header />
-      </View>
+      <View style={styles.content}>
+        <View style={styles.headerContainer}>
+          <Header />
+        </View>
 
-      <View style={styles.searchContainer}>
-        <SearchBar
-          value={search}
-          onChangeText={setSearch}
-        />
-      </View>
+        <View style={styles.searchContainer}>
+          <SearchBar value={search} onChangeText={setSearch} />
+        </View>
 
-      <View style={styles.listContainer}>
-        <VoiceNoteList
-          notes={filteredNotes}
-          playingId={playingId}
-          isPlaying={isPlaying}
-          currentTime={currentTime}
-          totalDuration={totalDuration}
-          onPlay={playNote}
-          onRename={openRename}
-          onDelete={deleteNote}
-        />
-      </View>
+        <View style={styles.listContainer}>
+          <VoiceNoteList
+            notes={filteredNotes}
+            searchQuery={search}
+            playingId={playingId}
+            isPlaying={isPlaying}
+            currentTime={currentTime}
+            totalDuration={totalDuration}
+            onPlay={playNote}
+            onRename={openRename}
+            onDelete={deleteNote}
+          />
+        </View>
 
-      <View style={styles.recordButtonContainer}>
-        <RecordButton
-          isRecording={recorderState.isRecording}
-          duration={formatTime(recorderState.durationMillis / 1000)}
-          onPress={handleRecording}
-        />
+        <View
+          style={[
+            styles.recordButtonContainer,
+            { paddingBottom: Math.max(insets.bottom, 12) },
+          ]}
+        >
+          <RecordButton
+            isRecording={recorderState.isRecording}
+            duration={formatTime(recorderState.durationMillis / 1000)}
+            onPress={handleRecording}
+          />
+        </View>
       </View>
 
       <RenameModal
@@ -117,28 +125,39 @@ export default function App() {
   );
 }
 
+export default function App() {
+  return (
+    <SafeAreaProvider>
+      <VoiceJournal />
+    </SafeAreaProvider>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAF9FC',
+  },
+
+  content: {
+    flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 12,
   },
 
   headerContainer: {
-    marginBottom: 22,
+    marginBottom: 12,
   },
 
   searchContainer: {
-    marginBottom: 24,
+    marginBottom: 20,
   },
 
   listContainer: {
     flex: 1,
+    minHeight: 0,
   },
 
   recordButtonContainer: {
     paddingTop: 12,
-    paddingBottom: 12,
   },
 });
