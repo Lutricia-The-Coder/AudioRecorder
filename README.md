@@ -28,6 +28,10 @@ It provides a simple way to capture thoughts, reminders and important moments th
 ![Menu Screen](assets/rename_delete.jpeg)
 ![Search Screen](assets/search.jpeg)
 
+## To download/Install application 
+https://drive.google.com/drive/folders/1pPwcrCAH7LWpxjz9s6PxJcKagvlR_WTD?usp=sharing
+
+or see manual vs app build and installation
 ## 3. Technologies Used
 
 | Technology | Purpose |
