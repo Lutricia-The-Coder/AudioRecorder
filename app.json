@@ -1,28 +1,21 @@
+
 {
   "expo": {
     "name": "MyVoiceNotes",
-    "slug": "MyVoiceNotes",
+    "slug": "my-voice-notes",
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundImage": "./assets/android-icon-background.png",
-        "monochromeImage": "./assets/android-icon-monochrome.png"
-      },
-      "predictiveBackGestureEnabled": false
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    },
     "plugins": [
-      "expo-audio"
-    ]
+      [
+        "expo-audio",
+        {
+          "microphonePermission": "Allow My Voice Notes to use your microphone."
+        }
+      ]
+    ],
+    "android": {
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
+    }
   }
 }
