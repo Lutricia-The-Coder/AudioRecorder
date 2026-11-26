@@ -21,14 +21,20 @@ const RecordButton = ({
   onPress,
 }: Props) => {
   return (
-    <View style={styles.card}>
-      <Text style={styles.heading}>
-        {isRecording
-          ? 'Recording...'
-          : 'Record a new voice note'}
-      </Text>
+    <View style={styles.container}>
+      {isRecording && (
+        <View style={styles.recordingInfo}>
+          <View style={styles.recordingDot} />
 
-      <Text style={styles.timer}>{duration}</Text>
+          <Text style={styles.recordingText}>
+            Recording in progress
+          </Text>
+
+          <Text style={styles.timer}>
+            {duration}
+          </Text>
+        </View>
+      )}
 
       <TouchableOpacity
         style={[
@@ -36,18 +42,25 @@ const RecordButton = ({
           isRecording && styles.stopButton,
         ]}
         onPress={onPress}
-        activeOpacity={0.8}
+        activeOpacity={0.85}
       >
-        {isRecording ? (
-          <Square size={20} color="#FFFFFF" />
-        ) : (
-          <Mic size={20} color="#FFFFFF" />
-        )}
+        <View style={styles.iconContainer}>
+          {isRecording ? (
+            <Square
+              size={17}
+              color="#FFFFFF"
+              fill="#FFFFFF"
+            />
+          ) : (
+            <Mic
+              size={20}
+              color="#FFFFFF"
+            />
+          )}
+        </View>
 
         <Text style={styles.buttonText}>
-          {isRecording
-            ? 'Stop Recording'
-            : 'Start Recording'}
+          {isRecording ? 'Stop recording' : 'New recording'}
         </Text>
       </TouchableOpacity>
     </View>
@@ -55,44 +68,73 @@ const RecordButton = ({
 };
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-    borderRadius: 15,
+  container: {
+    paddingTop: 3,
+    paddingBottom: 10,
     alignItems: 'center',
-    marginBottom: 20,
   },
 
-  heading: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: '#242044',
+  recordingInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 14,
+    gap: 8,
+  },
+
+  recordingDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#D65B5B',
+  },
+
+  recordingText: {
+    fontSize: 12,
+    color: '#77738C',
+    fontWeight: '500',
   },
 
   timer: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#7664D8',
-    margin: 15,
+    fontSize: 13,
+    color: '#302E46',
+    fontWeight: '600',
+    marginLeft: 5,
   },
 
   button: {
-    backgroundColor: '#7664D8',
-    padding: 15,
-    borderRadius: 30,
-    paddingHorizontal: 25,
+    width: '100%',
+    minHeight: 58,
+    backgroundColor: '#56517D',
+    borderRadius: 18,
+    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    justifyContent: 'center',
+    gap: 12,
+
+    shadowColor: '#56517D',
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    elevation: 5,
   },
 
   stopButton: {
-    backgroundColor: '#E74C3C',
+    backgroundColor: '#D65B5B',
+  },
+
+  iconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   buttonText: {
     color: '#FFFFFF',
-    fontWeight: 'bold',
+    fontSize: 15,
+    fontWeight: '600',
   },
 });
 

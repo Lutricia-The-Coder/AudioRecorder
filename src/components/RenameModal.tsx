@@ -7,6 +7,8 @@ import {
   TouchableOpacity,
   Modal,
   StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 
 import {
@@ -31,45 +33,77 @@ const RenameModal = ({
   onCancel,
 }: Props) => {
   return (
-    <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.background}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onCancel}
+    >
+      <KeyboardAvoidingView
+        style={styles.background}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         <View style={styles.card}>
+          {/* Close button */}
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={onCancel}
+          >
+            <X size={20} color="#77738C" />
+          </TouchableOpacity>
 
-          <View style={styles.titleContainer}>
-            <Pencil size={22} color="#7664D8" />
-
-            <Text style={styles.title}>
-              Rename Voice Note
-            </Text>
+          {/* Heading */}
+          <View style={styles.iconContainer}>
+            <Pencil size={22} color="#56517D" />
           </View>
 
+          <Text style={styles.title}>
+            Name this moment
+          </Text>
+
+          <Text style={styles.subtitle}>
+            Give your voice note a name you'll remember.
+          </Text>
+
+          {/* Name input */}
           <TextInput
             style={styles.input}
-            placeholder="Enter new name"
+            placeholder="Enter a name..."
+            placeholderTextColor="#9290A0"
             value={name}
             onChangeText={onChangeName}
+            autoFocus
+            selectTextOnFocus
+            returnKeyType="done"
+            onSubmitEditing={onSave}
           />
 
+          {/* Buttons */}
           <View style={styles.actions}>
             <TouchableOpacity
               style={styles.cancelButton}
               onPress={onCancel}
+              activeOpacity={0.7}
             >
-              <X size={18} color="#777777" />
-              <Text style={styles.cancel}>Cancel</Text>
+              <Text style={styles.cancelText}>
+                Cancel
+              </Text>
             </TouchableOpacity>
 
             <TouchableOpacity
               style={styles.saveButton}
               onPress={onSave}
+              activeOpacity={0.8}
             >
-              <Save size={18} color="#FFFFFF" />
-              <Text style={styles.saveText}>Save</Text>
+              <Save size={17} color="#FFFFFF" />
+
+              <Text style={styles.saveText}>
+                Save note
+              </Text>
             </TouchableOpacity>
           </View>
-
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -77,67 +111,95 @@ const RenameModal = ({
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(48, 46, 70, 0.45)',
     justifyContent: 'center',
-    padding: 25,
+    alignItems: 'center',
+    padding: 22,
   },
 
   card: {
-    backgroundColor: '#FFFFFF',
-    padding: 22,
-    borderRadius: 15,
+    width: '100%',
+    maxWidth: 400,
+    backgroundColor: '#FCFBFD',
+    padding: 25,
+    borderRadius: 24,
   },
 
-  titleContainer: {
-    flexDirection: 'row',
+  closeButton: {
+    alignSelf: 'flex-end',
+    padding: 5,
+  },
+
+  iconContainer: {
+    width: 46,
+    height: 46,
+    borderRadius: 15,
+    backgroundColor: '#E7E4F1',
     alignItems: 'center',
-    gap: 10,
-    marginBottom: 18,
+    justifyContent: 'center',
+    marginTop: 5,
+    marginBottom: 17,
   },
 
   title: {
-    fontSize: 19,
-    fontWeight: 'bold',
-    color: '#242044',
+    fontSize: 23,
+    fontWeight: '600',
+    color: '#302E46',
+  },
+
+  subtitle: {
+    fontSize: 13,
+    color: '#9290A0',
+    lineHeight: 20,
+    marginTop: 7,
+    marginBottom: 22,
   },
 
   input: {
+    height: 51,
+    backgroundColor: '#F5F4F8',
     borderWidth: 1,
-    borderColor: '#CCCCCC',
-    padding: 12,
-    borderRadius: 8,
+    borderColor: '#E7E4EC',
+    borderRadius: 12,
+    paddingHorizontal: 15,
+    fontSize: 14,
+    color: '#302E46',
   },
 
   actions: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginTop: 20,
-    gap: 20,
+    gap: 12,
+    marginTop: 23,
   },
 
   cancelButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 5,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
   },
 
-  cancel: {
-    color: '#777777',
+  cancelText: {
+    color: '#77738C',
+    fontSize: 13,
+    fontWeight: '500',
   },
 
   saveButton: {
-    backgroundColor: '#7664D8',
-    padding: 12,
-    borderRadius: 8,
+    backgroundColor: '#56517D',
+    paddingVertical: 13,
+    paddingHorizontal: 17,
+    borderRadius: 12,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 7,
+    justifyContent: 'center',
+    gap: 8,
   },
 
   saveText: {
     color: '#FFFFFF',
-    fontWeight: 'bold',
+    fontSize: 13,
+    fontWeight: '600',
   },
 });
 

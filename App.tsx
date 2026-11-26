@@ -4,6 +4,7 @@ import {
   View,
   StyleSheet,
   SafeAreaView,
+  StatusBar,
   Alert,
 } from 'react-native';
 
@@ -18,7 +19,6 @@ import { formatTime } from './src/utils/formatTime';
 import { VoiceNote } from './src/types/VoiceNote';
 
 export default function App() {
-
   const [search, setSearch] = useState('');
   const [selectedNote, setSelectedNote] = useState<VoiceNote | null>(null);
   const [newName, setNewName] = useState('');
@@ -44,7 +44,7 @@ export default function App() {
     setNewName(note.name);
   };
 
-  // Save new name
+  // Save renamed recording
   const saveRename = () => {
     if (!newName.trim()) {
       Alert.alert('Error', 'Please enter a name.');
@@ -61,7 +61,7 @@ export default function App() {
   // Filter recordings
   const filteredNotes = searchNotes(search);
 
-  // Handle recording button
+  // Start or stop recording
   const handleRecording = () => {
     if (recorderState.isRecording) {
       stopRecording();
@@ -72,30 +72,39 @@ export default function App() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
 
-      <Header />
+      <View style={styles.headerContainer}>
+        <Header />
+      </View>
 
-      <RecordButton
-        isRecording={recorderState.isRecording}
-        duration={formatTime(recorderState.durationMillis / 1000)}
-        onPress={handleRecording}
-      />
+      <View style={styles.searchContainer}>
+        <SearchBar
+          value={search}
+          onChangeText={setSearch}
+        />
+      </View>
 
-      <SearchBar
-        value={search}
-        onChangeText={setSearch}
-      />
+      <View style={styles.listContainer}>
+        <VoiceNoteList
+          notes={filteredNotes}
+          playingId={playingId}
+          isPlaying={isPlaying}
+          currentTime={currentTime}
+          totalDuration={totalDuration}
+          onPlay={playNote}
+          onRename={openRename}
+          onDelete={deleteNote}
+        />
+      </View>
 
-      <VoiceNoteList
-        notes={filteredNotes}
-        playingId={playingId}
-        isPlaying={isPlaying}
-        currentTime={currentTime}
-        totalDuration={totalDuration}
-        onPlay={playNote}
-        onRename={openRename}
-        onDelete={deleteNote}
-      />
+      <View style={styles.recordButtonContainer}>
+        <RecordButton
+          isRecording={recorderState.isRecording}
+          duration={formatTime(recorderState.durationMillis / 1000)}
+          onPress={handleRecording}
+        />
+      </View>
 
       <RenameModal
         visible={selectedNote !== null}
@@ -104,7 +113,6 @@ export default function App() {
         onSave={saveRename}
         onCancel={() => setSelectedNote(null)}
       />
-
     </SafeAreaView>
   );
 }
@@ -112,7 +120,25 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F4F3FA',
-    padding: 20,
+    backgroundColor: '#FAF9FC',
+    paddingHorizontal: 20,
+    paddingTop: 12,
+  },
+
+  headerContainer: {
+    marginBottom: 22,
+  },
+
+  searchContainer: {
+    marginBottom: 24,
+  },
+
+  listContainer: {
+    flex: 1,
+  },
+
+  recordButtonContainer: {
+    paddingTop: 12,
+    paddingBottom: 12,
   },
 });

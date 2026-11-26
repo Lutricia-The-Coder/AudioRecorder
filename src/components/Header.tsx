@@ -1,49 +1,83 @@
 
-import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Mic } from 'lucide-react-native';
+import { AudioLines } from 'lucide-react-native';
 
 const Header = () => {
   return (
     <View style={styles.header}>
-      <View style={styles.titleContainer}>
-        <Mic size={28} color="#FFFFFF" />
 
-        <Text style={styles.title}>
-          My Voice Notes
+      {/* Logo and brand name */}
+      <View style={styles.topRow}>
+        <View style={styles.logoContainer}>
+          <AudioLines size={22} color="#56517D" />
+        </View>
+
+        <Text style={styles.eyebrow}>
+          MY VOICE JOURNAL
         </Text>
       </View>
 
-      <Text style={styles.subtitle}>
-        Your personal voice journal
-      </Text>
+      {/* Main heading */}
+      <View style={styles.headingContainer}>
+        <Text style={styles.title}>
+          Good day,
+        </Text>
+
+        <Text style={styles.titleItalic}>
+          take a moment.
+        </Text>
+      </View>
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    backgroundColor: '#242044',
-    padding: 22,
-    borderRadius: 15,
-    marginBottom: 20,
+    paddingTop: 12,
+    paddingBottom: 24,
   },
 
-  titleContainer: {
+  topRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    justifyContent: 'flex-start',
+    gap: 12,
+    marginBottom: 30,
+  },
+
+  logoContainer: {
+    width: 43,
+    height: 43,
+    borderRadius: 14,
+    backgroundColor: '#E7E4F1',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  headingContainer: {
+    paddingHorizontal: 5,
+  },
+
+  eyebrow: {
+    fontSize: 11,
+    fontWeight: '700',
+    letterSpacing: 2,
+    color: '#7770A0',
   },
 
   title: {
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontSize: 39,
+    fontWeight: '600',
+    color: '#302E46',
+    lineHeight: 46,
   },
 
-  subtitle: {
-    color: '#D0CCE8',
-    marginTop: 5,
+  titleItalic: {
+    fontSize: 42,
+    fontStyle: 'italic',
+    color: '#7770A0',
+    lineHeight: 49,
   },
 });
 

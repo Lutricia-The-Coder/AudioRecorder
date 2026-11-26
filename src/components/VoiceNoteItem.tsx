@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,6 +10,7 @@ import {
 import {
   Play,
   Pause,
+  MoreHorizontal,
   Pencil,
   Trash2,
 } from 'lucide-react-native';
@@ -38,59 +39,61 @@ const VoiceNoteItem = ({
   onRename,
   onDelete,
 }: Props) => {
-  const progress = totalDuration > 0
-    ? Math.min((currentTime / totalDuration) * 100, 100)
-    : 0;
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const progress =
+    totalDuration > 0
+      ? Math.min((currentTime / totalDuration) * 100, 100)
+      : 0;
+
+  const handleRename = () => {
+    setMenuVisible(false);
+    onRename();
+  };
+
+  const handleDelete = () => {
+    setMenuVisible(false);
+    onDelete();
+  };
 
   return (
     <View style={styles.card}>
-      <Text style={styles.name}>{note.name}</Text>
-
-      <Text style={styles.date}>{note.date}</Text>
-
-      <Text style={styles.duration}>
-        Duration: {formatTime(note.duration)}
-      </Text>
-
-      <View style={styles.actions}>
+      {/* Top row */}
+      <View style={styles.topRow}>
         <TouchableOpacity
           style={styles.playButton}
           onPress={onPlay}
+          activeOpacity={0.75}
         >
           {isPlaying ? (
-            <Pause size={18} color="#FFFFFF" />
+            <Pause size={19} color="#56517D" fill="#56517D" />
           ) : (
-            <Play size={18} color="#FFFFFF" />
+            <Play size={19} color="#56517D" fill="#56517D" />
           )}
+        </TouchableOpacity>
 
-          <Text style={styles.buttonText}>
-            {isPlaying ? 'Pause' : 'Play'}
+        <View style={styles.noteInfo}>
+          <Text style={styles.name} numberOfLines={1}>
+            {note.name}
           </Text>
-        </TouchableOpacity>
+
+          <Text style={styles.date} numberOfLines={1}>
+            {note.date} · {formatTime(note.duration)}
+          </Text>
+        </View>
 
         <TouchableOpacity
-          style={styles.iconButton}
-          onPress={onRename}
+          style={styles.menuButton}
+          onPress={() => setMenuVisible(!menuVisible)}
+          activeOpacity={0.7}
         >
-          <Pencil size={18} color="#7664D8" />
-          <Text style={styles.rename}>Rename</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.iconButton}
-          onPress={onDelete}
-        >
-          <Trash2 size={18} color="#E74C3C" />
-          <Text style={styles.delete}>Delete</Text>
+          <MoreHorizontal size={22} color="#77738C" />
         </TouchableOpacity>
       </View>
 
+      {/* Playback progress */}
       {isCurrentlyPlaying && (
         <View style={styles.progressArea}>
-          <Text style={styles.duration}>
-            {formatTime(currentTime)} / {formatTime(totalDuration)}
-          </Text>
-
           <View style={styles.progressBackground}>
             <View
               style={[
@@ -99,6 +102,39 @@ const VoiceNoteItem = ({
               ]}
             />
           </View>
+
+          <View style={styles.timeRow}>
+            <Text style={styles.timeText}>
+              {formatTime(currentTime)}
+            </Text>
+
+            <Text style={styles.timeText}>
+              {formatTime(totalDuration)}
+            </Text>
+          </View>
+        </View>
+      )}
+
+      {/* Action menu */}
+      {menuVisible && (
+        <View style={styles.menu}>
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={handleRename}
+          >
+            <Pencil size={16} color="#7770A0" />
+            <Text style={styles.renameText}>Rename</Text>
+          </TouchableOpacity>
+
+          <View style={styles.menuDivider} />
+
+          <TouchableOpacity
+            style={styles.menuItem}
+            onPress={handleDelete}
+          >
+            <Trash2 size={16} color="#D65B5B" />
+            <Text style={styles.deleteText}>Delete</Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -107,80 +143,114 @@ const VoiceNoteItem = ({
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#FFFFFF',
-    padding: 16,
-    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    borderWidth: 1,
+    borderColor: '#E8E8E2',
+    borderRadius: 18,
+    padding: 15,
     marginBottom: 12,
   },
 
-  name: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: '#242044',
-  },
-
-  date: {
-    color: '#888888',
-    marginTop: 5,
-  },
-
-  duration: {
-    color: '#7664D8',
-    marginTop: 8,
-  },
-
-  actions: {
+  topRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    marginTop: 15,
   },
 
   playButton: {
-    backgroundColor: '#7664D8',
-    padding: 10,
-    borderRadius: 20,
-    flexDirection: 'row',
+    width: 43,
+    height: 43,
+    borderRadius: 14,
+    backgroundColor: '#E7E4F1',
     alignItems: 'center',
-    gap: 6,
+    justifyContent: 'center',
   },
 
-  buttonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
+  noteInfo: {
+    flex: 1,
+    marginLeft: 12,
   },
 
-  iconButton: {
-    flexDirection: 'row',
+  name: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#302E46',
+  },
+
+  date: {
+    fontSize: 11,
+    color: '#9290A0',
+    marginTop: 5,
+  },
+
+  menuButton: {
+    width: 34,
+    height: 38,
     alignItems: 'center',
-    gap: 5,
-  },
-
-  rename: {
-    color: '#7664D8',
-    fontWeight: 'bold',
-  },
-
-  delete: {
-    color: '#E74C3C',
-    fontWeight: 'bold',
+    justifyContent: 'center',
   },
 
   progressArea: {
-    marginTop: 12,
+    marginTop: 16,
   },
 
   progressBackground: {
-    height: 6,
-    backgroundColor: '#E0DDEE',
+    height: 4,
+    backgroundColor: '#EAE8F0',
     borderRadius: 5,
-    marginTop: 8,
+    overflow: 'hidden',
   },
 
   progressFill: {
-    height: 6,
-    backgroundColor: '#7664D8',
+    height: 4,
+    backgroundColor: '#7770A0',
     borderRadius: 5,
+  },
+
+  timeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 7,
+  },
+
+  timeText: {
+    fontSize: 10,
+    color: '#9290A0',
+  },
+
+  menu: {
+    alignSelf: 'flex-end',
+    width: 145,
+    backgroundColor: '#FCFBFD',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E8E6EE',
+    marginTop: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    gap: 10,
+  },
+
+  menuDivider: {
+    height: 1,
+    backgroundColor: '#EEEAF2',
+  },
+
+  renameText: {
+    fontSize: 13,
+    color: '#56517D',
+    fontWeight: '500',
+  },
+
+  deleteText: {
+    fontSize: 13,
+    color: '#D65B5B',
+    fontWeight: '500',
   },
 });
 

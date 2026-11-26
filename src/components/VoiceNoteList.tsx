@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from 'react-native';
 
-import { Mic } from 'lucide-react-native';
+import { ChevronDown } from 'lucide-react-native';
 
 import { VoiceNote } from '../types/VoiceNote';
 import VoiceNoteItem from './VoiceNoteItem';
@@ -35,44 +35,57 @@ const VoiceNoteList = ({
 }: Props) => {
   return (
     <View style={styles.container}>
-
+      {/* Recordings heading */}
       <View style={styles.heading}>
-        <View style={styles.titleContainer}>
-          <Mic size={22} color="#7664D8" />
-
-          <Text style={styles.title}>
-            My Recordings
+        <View>
+          <Text style={styles.title}>Your recordings</Text>
+          <Text style={styles.count}>
+            {notes.length} {notes.length === 1 ? 'moment' : 'moments'}
           </Text>
         </View>
-
-        <Text style={styles.count}>
-          {notes.length} notes
-        </Text>
       </View>
 
+      {/* Recordings list */}
       <FlatList
         data={notes}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={
-          <Text style={styles.empty}>
-            No voice notes found. Start recording!
-          </Text>
+        contentContainerStyle={
+          notes.length === 0 ? styles.emptyList : styles.listContent
         }
-        renderItem={({ item }) => (
-          <VoiceNoteItem
-            note={item}
-            isPlaying={playingId === item.id && isPlaying}
-            isCurrentlyPlaying={playingId === item.id}
-            currentTime={currentTime}
-            totalDuration={totalDuration || item.duration}
-            onPlay={() => onPlay(item)}
-            onRename={() => onRename(item)}
-            onDelete={() => onDelete(item)}
-          />
-        )}
-      />
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyTitle}>
+              No recordings yet
+            </Text>
 
+            <Text style={styles.empty}>
+              Your voice notes will appear here.
+              Start recording to capture a moment.
+            </Text>
+          </View>
+        }
+        renderItem={({ item }) => {
+          const isCurrentNote = playingId === item.id;
+
+          return (
+            <VoiceNoteItem
+              note={item}
+              isPlaying={isCurrentNote && isPlaying}
+              isCurrentlyPlaying={isCurrentNote}
+              currentTime={isCurrentNote ? currentTime : 0}
+              totalDuration={
+                isCurrentNote
+                  ? totalDuration || item.duration
+                  : item.duration
+              }
+              onPlay={() => onPlay(item)}
+              onRename={() => onRename(item)}
+              onDelete={() => onDelete(item)}
+            />
+          );
+        }}
+      />
     </View>
   );
 };
@@ -80,35 +93,70 @@ const VoiceNoteList = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 8,
   },
 
   heading: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
-  },
-
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+    marginBottom: 16,
   },
 
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#242044',
+    fontWeight: '600',
+    color: '#302E46',
   },
 
   count: {
-    color: '#7664D8',
+    fontSize: 12,
+    color: '#9290A0',
+    marginTop: 4,
+  },
+
+  sortContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingVertical: 7,
+    paddingHorizontal: 11,
+    backgroundColor: '#F1F0F6',
+    borderRadius: 10,
+  },
+
+  sortText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#77738C',
+  },
+
+  listContent: {
+    paddingBottom: 15,
+  },
+
+  emptyList: {
+    flexGrow: 1,
+  },
+
+  emptyContainer: {
+    alignItems: 'center',
+    paddingHorizontal: 25,
+    marginTop: 55,
+  },
+
+  emptyTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#302E46',
+    marginBottom: 8,
   },
 
   empty: {
+    fontSize: 13,
+    lineHeight: 21,
     textAlign: 'center',
-    color: '#888888',
-    marginTop: 30,
+    color: '#9290A0',
   },
 });
 
