@@ -1,6 +1,12 @@
 
 import React from 'react';
-import { TextInput, StyleSheet } from 'react-native';
+import {
+  View,
+  TextInput,
+  StyleSheet,
+} from 'react-native';
+
+import { Search } from 'lucide-react-native';
 
 type Props = {
   value: string;
@@ -9,21 +15,35 @@ type Props = {
 
 const SearchBar = ({ value, onChangeText }: Props) => {
   return (
-    <TextInput
-      style={styles.input}
-      placeholder="Search voice notes..."
-      value={value}
-      onChangeText={onChangeText}
-    />
+    <View style={styles.container}>
+      <Search size={20} color="#7664D8" />
+
+      <TextInput
+        style={styles.input}
+        placeholder="Search voice notes..."
+        placeholderTextColor="#999999"
+        value={value}
+        onChangeText={onChangeText}
+      />
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  input: {
+  container: {
     backgroundColor: '#FFFFFF',
-    padding: 15,
+    paddingHorizontal: 15,
     borderRadius: 10,
     marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+
+  input: {
+    flex: 1,
+    paddingVertical: 15,
+    color: '#242044',
   },
 });
 
